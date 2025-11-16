@@ -1,0 +1,27 @@
+#########################匯入模組#########################
+import paho.mqtt.client as mqtt
+
+
+#########################函式與類別定義#########################
+def on_connect(client, userdata, connect_flags, reason_code, properties):
+    print(f"連線結果: {reason_code}")
+    client.subscribe("baseball")  # 訂閱主題
+
+
+def on_message(client, userdata, msg):
+    print(f"我訂閱的主題是: {msg.topic}, 收到訊息: {msg.payload.decode('utf-8')}")
+
+
+#########################宣告與設定#########################
+client = mqtt.Client(
+    callback_api_version=mqtt.CallbackAPIVersion.VERSION2
+)  # 建立MQTT Client物件
+# 設定連線與訊息處理函式
+client.on_connect = on_connect
+client.on_message = on_message
+client.username_pw_set("singular", "Singular#1234")  # 設定帳號密碼
+# 連接伺服器
+client.connect("mqtt.singularinnovation-ai.com", 1883, 60)
+# 保持連線
+client.loop_forever()
+#########################主程式#########################
